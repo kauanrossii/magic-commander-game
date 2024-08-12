@@ -1,4 +1,4 @@
-﻿namespace MagicCommander.Domain.Deck.Entities
+﻿namespace MagicCommander.Domain.Cards.Entities
 {
     public enum TypeColor
     {

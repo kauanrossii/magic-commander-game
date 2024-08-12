@@ -1,10 +1,11 @@
 ﻿using MagicCommander.Domain._Shared;
+using MagicCommander.Domain.Cards.Entities;
 
-namespace MagicCommander.Domain.Deck.Entities
+namespace MagicCommander.Domain.Decks.Entities
 {
     public class Deck
     {
-        private List<Card> _cards { get; set; } = new();
+        private List<Card> _cards = new();
         
         public int Id { get; set; }
         public Guid Key { get; set; }
