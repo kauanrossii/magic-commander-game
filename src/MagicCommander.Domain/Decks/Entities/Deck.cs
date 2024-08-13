@@ -5,14 +5,14 @@ namespace MagicCommander.Domain.Decks.Entities
 {
     public class Deck
     {
-        private List<DeckCard> _cards = new();
+        private List<Card> _cards = new();
         
         public int Id { get; set; }
         public Guid Key { get; set; }
         public string Name { get; set; }
         public Audit Audit { get; set; } = new();
         public Card Commander { get; set; }
-        public IReadOnlyList<DeckCard> Cards { get { return _cards; } set { _cards = value.ToList(); } }
+        public IReadOnlyList<Card> Cards { get { return _cards; } set { _cards = value.ToList(); } }
 
         public Deck(string name, Card commander)
         {
@@ -22,19 +22,23 @@ namespace MagicCommander.Domain.Decks.Entities
 
         public bool AddCard(Card card)
         {
-            if (Commander.Colors.Except(card.Colors).Any())
+            if (!IsCardColorsValid(card.Colors))
                 return false;
 
-            var duplicatedCard = _cards.Exists(card => card.Data.ExternalId == card.Data.ExternalId);
-
-            if (duplicatedCard)
+            if (IsCardDuplicatedInDeck(card))
                 return false;
 
-            _cards.Add(new DeckCard(card));
+            _cards.Add(card);
             return true;
         }
 
+        private bool IsCardColorsValid(IEnumerable<TypeColor> colors)
+            => Commander.Colors.Except(colors).Any();
+
+        private bool IsCardDuplicatedInDeck(Card card)
+            => _cards.Exists(card => card.ExternalId == card.ExternalId);
+
         public bool RemoveCard(Card card) =>
-            _cards.Remove(new DeckCard(card));
+            _cards.Remove(card);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace MagicCommander.Domain.Users
+﻿using MagicCommander.Domain._Shared;
+
+namespace MagicCommander.Domain.Users
 {
 	public class User
 	{
@@ -7,6 +9,7 @@
         public string Name { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+		public Audit Audit{ get; set; } = new();
 
 		protected User() { }
 

@@ -29,6 +29,24 @@ public class DecksConfiguration : IEntityTypeConfiguration<Deck>
             .HasColumnName("Name")
             .IsRequired();
 
+        builder
+            .HasMany(d => d.Cards)
+            .WithMany()
+            .UsingEntity<DeckCard>(
+                j => j
+                    .HasOne(dc => dc.Card)
+                    .WithMany()
+                    .HasForeignKey(dc => dc.CardId),
+                j => j
+                    .HasOne(dc => dc.Deck)
+                    .WithMany()
+                    .HasForeignKey(dc => dc.DeckId),
+                j =>
+                {
+                    j.HasKey(dc => new { dc.DeckId, dc.CardId });
+                }
+            );
+
         builder.OwnsOne(d => d.Audit, audit =>
         {
             audit
