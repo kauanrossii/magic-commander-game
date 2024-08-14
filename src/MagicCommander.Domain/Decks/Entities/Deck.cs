@@ -7,15 +7,17 @@ namespace MagicCommander.Domain.Decks.Entities
     public class Deck : Entity, IHasAlternateKey
     {
         private List<Card> _cards = new();
-        
-        public Guid Key { get; set; }
-        public string Name { get; set; }
-        public Audit Audit { get; set; } = new();
-        public Card Commander { get; set; }
+
+        public Guid Key { get; init; }
+        public string Name { get; protected set; }
+        public int UserId { get; protected set; }
+        public Audit Audit { get; protected set; } = new();
+        public Card Commander { get; protected set; }
         public IReadOnlyList<Card> Cards { get { return _cards; } set { _cards = value.ToList(); } }
 
         public Deck(string name, Card commander)
         {
+            Key = Guid.NewGuid();
             Name = name;
             Commander = commander;
         }

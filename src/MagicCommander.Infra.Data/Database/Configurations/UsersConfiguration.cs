@@ -1,4 +1,4 @@
-using MagicCommander.Domain.Users;
+using MagicCommander.Domain.Users.Entites;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

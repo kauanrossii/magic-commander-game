@@ -1,6 +1,3 @@
-using MagicCommander.Domain.Cards.Entities;
-using MagicCommander.Domain.Decks.Entities;
-using MagicCommander.Domain.Users;
 using MagicCommander.Infra.Data.Database.Configurations;
 using Microsoft.EntityFrameworkCore;
 

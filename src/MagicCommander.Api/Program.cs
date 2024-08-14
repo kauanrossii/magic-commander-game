@@ -1,10 +1,30 @@
+using MagicCommander.Application.Auth.Sigin;
+using MagicCommander.Domain.Cards;
+using MagicCommander.Domain.Decks;
+using MagicCommander.Domain.Users;
+using MagicCommander.Infra.Data.Database;
+using MagicCommander.Infra.Data.Database.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<MagicContext>(options => 
+	options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresqlConnection")
+));
+
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IDecksRepository, DecksRepository>();
+builder.Services.AddScoped<ICardsRepository, CardsRepository>();
+
+builder.Services.AddMediatR(cfg => {
+	cfg.RegisterServicesFromAssemblyContaining<Program>();
+	cfg.RegisterServicesFromAssemblyContaining<SigninRequest>();
+});
 
 builder.Services.AddMvc(config =>
 {
@@ -39,7 +59,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

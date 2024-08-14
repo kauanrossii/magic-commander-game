@@ -1,7 +1,7 @@
 ﻿using MagicCommander.Domain._Shared;
 using MagicCommander.Domain._Shared.Entities;
 
-namespace MagicCommander.Domain.Users
+namespace MagicCommander.Domain.Users.Entites
 {
 	public class User : Entity, IHasAlternateKey
 	{

@@ -4,7 +4,8 @@ using System.Linq.Expressions;
 
 namespace MagicCommander.Infra.Data.Database._Shared
 {
-	public class Repository<TEntity> where TEntity : Entity
+	public class Repository<TEntity> : IRepository<TEntity>
+		 where TEntity : Entity
 	{
 		protected readonly DbContext _dbContext;
 
@@ -27,7 +28,7 @@ namespace MagicCommander.Infra.Data.Database._Shared
 
 		public async Task<TEntity?> FindAsync(Guid key)
 		{
-			if (typeof(IHasAlternateKey).IsAssignableFrom(typeof(TEntity)) {
+			if (typeof(IHasAlternateKey).IsAssignableFrom(typeof(TEntity))) {
 			return await _dbContext
 				.Set<TEntity>()
 				.Where(e => ((IHasAlternateKey)e).Key == key)
