@@ -1,13 +1,13 @@
 ﻿using MagicCommander.Domain._Shared;
+using MagicCommander.Domain._Shared.Entities;
 using MagicCommander.Domain.Cards.Entities;
 
 namespace MagicCommander.Domain.Decks.Entities
 {
-    public class Deck
+    public class Deck : Entity, IHasAlternateKey
     {
         private List<Card> _cards = new();
         
-        public int Id { get; set; }
         public Guid Key { get; set; }
         public string Name { get; set; }
         public Audit Audit { get; set; } = new();

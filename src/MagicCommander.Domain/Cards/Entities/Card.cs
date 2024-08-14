@@ -1,15 +1,15 @@
 ﻿using MagicCommander.Domain._Shared;
+using MagicCommander.Domain._Shared.Entities;
 
 namespace MagicCommander.Domain.Cards.Entities
 {
-	public class Card
+	public class Card : Entity, IHasAlternateKey
 	{
 		private List<TypeColor> _colors = new();
 		private List<TypeCard> _types = new();
 		private List<SubtypeCard> _subtypes = new();
 		private List<Rulling> _rullings = new();
 
-		public int Id { get; set; }
 		public Guid Key { get; set; }
 		public int MultiverseId { get; set; }
 		public int Cmc { get; set; }

@@ -1,10 +1,10 @@
 ﻿using MagicCommander.Domain._Shared;
+using MagicCommander.Domain._Shared.Entities;
 
 namespace MagicCommander.Domain.Users
 {
-	public class User
+	public class User : Entity, IHasAlternateKey
 	{
-        public int Id { get; set; }
         public Guid Key { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

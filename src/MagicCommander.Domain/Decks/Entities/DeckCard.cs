@@ -1,11 +1,11 @@
 using MagicCommander.Domain._Shared;
+using MagicCommander.Domain._Shared.Entities;
 using MagicCommander.Domain.Cards.Entities;
 
 namespace MagicCommander.Domain.Decks.Entities;
 
-public class DeckCard
+public class DeckCard : Entity, IHasAlternateKey
 {
-    public int Id { get; protected set; }
     public Deck Deck { get; protected set; }
     public int DeckId { get; protected set; }
     public Card Card { get; protected set; }

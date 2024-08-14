@@ -1,8 +1,9 @@
-﻿namespace MagicCommander.Domain.Cards.Entities
+﻿using MagicCommander.Domain._Shared.Entities;
+
+namespace MagicCommander.Domain.Cards.Entities
 {
-    public class Rulling
+    public class Rulling : Entity, IHasAlternateKey
     {
-        public int Id { get; protected set; }
         public Guid Key { get; protected set; } = Guid.Empty;
         public string Text { get; protected set; } = string.Empty;
         public DateTimeOffset Date { get; protected set; }
