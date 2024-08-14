@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16.2-alpine
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${DB_DATABASE} -U ${DB_USERNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+
+  liquibase:
+    image: liquibase/liquibase
+    env_file:
+      - .env
+    environment:
+      changeLogFile: changelog.xml
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      url: "jdbc:postgresql://postgres:5432/"
