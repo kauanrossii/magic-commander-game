@@ -1,3 +1,5 @@
+using MagicCommander.Api.CrossCutting;
+using MagicCommander.Api.Helpers;
 using MagicCommander.Application.Auth.Sigin;
 using MagicCommander.Domain._Shared.Entities;
 using MagicCommander.Domain.Cards;
@@ -11,12 +13,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DbContext, MagicContext>(options => {
-	var connectionString = builder.Configuration.GetConnectionString("PostgresqlConnection"); 
+if (builder.Environment.IsDevelopment())
+{
+	Environment.SetEnvironmentVariable("JwtSecret", builder.Configuration.GetValue<string>("JwtSecet"));
+}
+
+builder.Services.AddDbContext<DbContext, MagicContext>(options =>
+{
+	var connectionString = builder.Configuration.GetConnectionString("PostgresqlConnection");
 	options.UseNpgsql(connectionString);
 });
 
@@ -26,7 +35,8 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IDecksRepository, DecksRepository>();
 builder.Services.AddScoped<ICardsRepository, CardsRepository>();
 
-builder.Services.AddMediatR(cfg => {
+builder.Services.AddMediatR(cfg =>
+{
 	cfg.RegisterServicesFromAssemblyContaining<Program>();
 	cfg.RegisterServicesFromAssemblyContaining<SigninRequest>();
 });
@@ -38,8 +48,6 @@ builder.Services.AddMvc(config =>
 		.Build();
 	config.Filters.Add(new AuthorizeFilter(policy));
 });
-
-var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtSecret"]);
 
 builder.Services.AddAuthentication(x =>
 {
@@ -53,21 +61,60 @@ builder.Services.AddAuthentication(x =>
 	x.TokenValidationParameters = new TokenValidationParameters
 	{
 		ValidateIssuerSigningKey = true,
-		IssuerSigningKey = new SymmetricSecurityKey(key),
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JwtSecret"))!),
 		ValidateIssuer = true,
 		ValidateAudience = false
 	};
 });
 
+builder.Services.AddAuthorization(options =>
+{
+	options.DefaultPolicy = new AuthorizationPolicyBuilder()
+			.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+			.RequireAuthenticatedUser()
+			.Build();
+});
+
+builder.Services.AddScoped<JwtTokenHelper>();
+builder.Services.AddScoped<JwtMiddleware>();
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+	options.SwaggerDoc("v1", new OpenApiInfo { Title = "Magic Commander Deck", Version = "v1" });
+	options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+	{
+		In = ParameterLocation.Header,
+		Description = "Please ener a valid token",
+		Name = "Authorization",
+		Type = SecuritySchemeType.Http,
+		BearerFormat = "JWT",
+		Scheme = "Bearer"
+	});
+	options.AddSecurityRequirement(new OpenApiSecurityRequirement
+	{
+		{
+			new OpenApiSecurityScheme
+			{
+				Reference = new OpenApiReference
+				{
+					Type = ReferenceType.SecurityScheme,
+					Id = "Bearer"
+				}
+			},
+			new string[]{}
+		}
+	});
+});
 
 var app = builder.Build();
 
+app.UseMiddleware<JwtMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseAuthentication();

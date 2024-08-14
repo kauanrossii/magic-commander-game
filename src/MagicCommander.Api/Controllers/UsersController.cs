@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MagicCommander.Api.Controllers
 {
-    [Route("api/users")]
+    [Route("api/v1/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
