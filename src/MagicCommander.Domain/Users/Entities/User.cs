@@ -13,12 +13,12 @@ namespace MagicCommander.Domain.Users.Entites
 
 		protected User() { }
 
-		public User(string name, string password, string email)
+		public User(string name, string email, string password)
 		{
 			Key = Guid.NewGuid();
 			Name = name;
-			Password = password;
 			Email = email;
+			Password = password;
 		}
 	}
 }

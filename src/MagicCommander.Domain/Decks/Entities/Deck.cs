@@ -15,6 +15,8 @@ namespace MagicCommander.Domain.Decks.Entities
         public Card Commander { get; protected set; }
         public IReadOnlyList<Card> Cards { get { return _cards; } set { _cards = value.ToList(); } }
 
+        protected Deck() { }
+
         public Deck(string name, Card commander)
         {
             Key = Guid.NewGuid();

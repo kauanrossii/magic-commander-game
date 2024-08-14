@@ -44,6 +44,16 @@ public class DecksConfiguration : IEntityTypeConfiguration<Deck>
                 j =>
                 {
                     j.HasKey(dc => new { dc.DeckId, dc.CardId });
+                    j.OwnsOne(dc => dc.Audit, audit =>
+                    {
+                        audit
+                            .Property(a => a.CreatedAt)
+                            .HasColumnName("CreatedAt");
+
+                        audit
+                            .Property(a => a.UpdatedAt)
+                            .HasColumnName("UpdatedAt");
+                    });
                 }
             );
 

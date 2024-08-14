@@ -1,24 +1,27 @@
 ﻿using MagicCommander.Application.Dtos.Jwt;
+using MagicCommander.Domain.Users;
 using MediatR;
 
 namespace MagicCommander.Application.Auth.Sigin
 {
 	public class SigninRequestHandler : IRequestHandler<SigninRequest, JwtDto?>
 	{
-		private readonly IUserRepository _userRepository;
+		private readonly IUsersRepository _usersRepository;
 
-		public SigninRequestHandler(IUserRepository userRepository)
+		public SigninRequestHandler(IUsersRepository userRepository)
 		{
-			_userRepository = userRepository;
+			_usersRepository = userRepository;
 		}
 
-		public Task<JwtDto?> Handle(SigninRequest request, CancellationToken cancellationToken)
+		public async Task<JwtDto?> Handle(SigninRequest request, CancellationToken cancellationToken)
 		{
 			// Try to get an user with this email
 
 			// Try verify if the saved hash password is equals to request password
 
 			// Sign jwt with user's informations as claims
+			await Task.CompletedTask;
+			return new JwtDto();
 		}
 	}
 }

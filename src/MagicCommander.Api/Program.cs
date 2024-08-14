@@ -1,8 +1,10 @@
 using MagicCommander.Application.Auth.Sigin;
+using MagicCommander.Domain._Shared.Entities;
 using MagicCommander.Domain.Cards;
 using MagicCommander.Domain.Decks;
 using MagicCommander.Domain.Users;
 using MagicCommander.Infra.Data.Database;
+using MagicCommander.Infra.Data.Database._Shared;
 using MagicCommander.Infra.Data.Database.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -13,9 +15,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<MagicContext>(options => 
-	options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresqlConnection")
-));
+builder.Services.AddDbContext<DbContext, MagicContext>(options => {
+	var connectionString = builder.Configuration.GetConnectionString("PostgresqlConnection"); 
+	options.UseNpgsql(connectionString);
+});
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IDecksRepository, DecksRepository>();
@@ -66,6 +71,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication();
+
+app.MapControllers();
 
 app.UseHttpsRedirection();
 
