@@ -4,6 +4,7 @@ using MagicCommander.Application.Auth.Sigin;
 using MagicCommander.Domain._Shared.Entities;
 using MagicCommander.Domain.Cards;
 using MagicCommander.Domain.Decks;
+using MagicCommander.Domain.DecksImports;
 using MagicCommander.Domain.Users;
 using MagicCommander.Infra.Data.Database;
 using MagicCommander.Infra.Data.Database._Shared;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IDecksRepository, DecksRepository>();
 builder.Services.AddScoped<ICardsRepository, CardsRepository>();
+builder.Services.AddScoped<IDeckImportsRepository, DeckImportsRepository>();
 
 builder.Services.AddScoped<JwtTokenHelper>();
 builder.Services.AddScoped<JwtMiddleware>();

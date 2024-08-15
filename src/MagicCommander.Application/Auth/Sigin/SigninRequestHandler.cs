@@ -28,12 +28,12 @@ namespace MagicCommander.Application.Auth.Sigin
 			if (request.Password != existentUser.Password)
 				throw new EntityNotFoundException();
 
-			var result = _jwtTokenHelper
+			var (AccessToken, ExpiresIn) = _jwtTokenHelper
 				.GenerateJwtToken(existentUser.Key, existentUser.Role);
 
 			return new AuthenticationJwtDto(
-				result.AccessToken,
-				result.ExpiresIn
+				AccessToken,
+				ExpiresIn
 			);
 		}
 	}
