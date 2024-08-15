@@ -43,14 +43,14 @@ public class CardsConfiguration : IEntityTypeConfiguration<Card>
             .IsRequired();
 
         builder
-            .Property(c => c.Rarity)
-            .HasConversion(new EnumToNumberConverter<TypeRarity, int>())
-            .HasColumnName("Rarity")
+            .Property(c => c.Set)
+            .HasColumnName("Set")
             .IsRequired();
 
         builder
-            .Property(c => c.Set)
-            .HasColumnName("Set")
+            .Property(c => c.Rarity)
+            .HasConversion(new EnumToNumberConverter<TypeRarity, int>())
+            .HasColumnName("Rarity")
             .IsRequired();
 
         builder
@@ -102,6 +102,17 @@ public class CardsConfiguration : IEntityTypeConfiguration<Card>
                     .ToList()
             )
             .HasColumnName("Colors")
+            .IsRequired();
+
+        builder
+            .Property(c => c.Supertypes)
+            .HasConversion(
+                c => string.Join(",", c.Select(e => e.ToString().ToArray())),
+                c => c.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                    .Select(e => (SupertypeCard)int.Parse(e))
+                    .ToList()
+            )
+            .HasColumnName("Supertypes")
             .IsRequired();
 
         builder
