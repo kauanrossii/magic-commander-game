@@ -1,4 +1,4 @@
-using MagicCommander.Application._Shared;
+using MagicCommander.Application._Shared.Dtos;
 using MagicCommander.Domain._Shared.Entities;
 using MagicCommander.Domain.Users;
 using MagicCommander.Domain.Users.Entites;

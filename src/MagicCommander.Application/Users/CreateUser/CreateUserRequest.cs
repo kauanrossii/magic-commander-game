@@ -1,4 +1,4 @@
-using MagicCommander.Application._Shared;
+using MagicCommander.Application._Shared.Dtos;
 using MediatR;
 
 namespace MagicCommander.Application.Users.CreateUser;

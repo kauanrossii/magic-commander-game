@@ -35,6 +35,9 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IDecksRepository, DecksRepository>();
 builder.Services.AddScoped<ICardsRepository, CardsRepository>();
 
+builder.Services.AddScoped<JwtTokenHelper>();
+builder.Services.AddScoped<JwtMiddleware>();
+
 builder.Services.AddMediatR(cfg =>
 {
 	cfg.RegisterServicesFromAssemblyContaining<Program>();
@@ -74,9 +77,6 @@ builder.Services.AddAuthorization(options =>
 			.RequireAuthenticatedUser()
 			.Build();
 });
-
-builder.Services.AddScoped<JwtTokenHelper>();
-builder.Services.AddScoped<JwtMiddleware>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

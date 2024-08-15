@@ -1,15 +1,17 @@
 ﻿using MagicCommander.Domain._Shared;
 using MagicCommander.Domain._Shared.Entities;
+using MagicCommander.Domain.Users.Entities;
 
 namespace MagicCommander.Domain.Users.Entites
 {
 	public class User : Entity, IHasAlternateKey
 	{
-        public Guid Key { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-		public Audit Audit{ get; set; } = new();
+		public Guid Key { get; init; }
+		public string Name { get; protected set; } = string.Empty;
+		public string Password { get; protected set; } = string.Empty;
+		public string Email { get; protected set; } = string.Empty;
+		public TypeRole Role { get; protected set; } = TypeRole.Common;
+		public Audit Audit { get; protected set; } = new();
 
 		protected User() { }
 

@@ -2,11 +2,14 @@
 
 namespace MagicCommander.Application._Shared.Options
 {
-	public class AuthenticationOptions
+	public class JwtOptions
 	{
 		private byte[] _jwtSecretBytes = [];
 		public string JwtSecret { get; init; } = string.Empty;
-		public byte[] JwtSecretBytes
+		public string JwtAudience { get; init; } = string.Empty;
+		public string JwtIssuer { get; set; } = string.Empty;
+
+        public byte[] JwtSecretBytes
 		{
 			get
 			{

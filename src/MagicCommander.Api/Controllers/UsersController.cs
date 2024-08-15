@@ -1,5 +1,5 @@
 using System.Net;
-using MagicCommander.Application._Shared;
+using MagicCommander.Application._Shared.Dtos;
 using MagicCommander.Application.Users.CreateUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

@@ -1,27 +1,40 @@
-﻿using MagicCommander.Application.Dtos.Jwt;
+﻿using MagicCommander.Api.Helpers;
+using MagicCommander.Application._Shared.Dtos.Jwt;
+using MagicCommander.Application._Shared.Exceptions;
 using MagicCommander.Domain.Users;
 using MediatR;
 
 namespace MagicCommander.Application.Auth.Sigin
 {
-	public class SigninRequestHandler : IRequestHandler<SigninRequest, JwtDto?>
+    public class SigninRequestHandler : IRequestHandler<SigninRequest, AuthenticationJwtDto?>
 	{
 		private readonly IUsersRepository _usersRepository;
+		private readonly JwtTokenHelper _jwtTokenHelper;
 
-		public SigninRequestHandler(IUsersRepository userRepository)
+		public SigninRequestHandler(IUsersRepository usersRepository, JwtTokenHelper jwtTokenHelper)
 		{
-			_usersRepository = userRepository;
+			_usersRepository = usersRepository;
+			_jwtTokenHelper = jwtTokenHelper;
 		}
 
-		public async Task<JwtDto?> Handle(SigninRequest request, CancellationToken cancellationToken)
+		public async Task<AuthenticationJwtDto?> Handle(SigninRequest request, CancellationToken cancellationToken)
 		{
-			// Try to get an user with this email
+			var existentUser = await _usersRepository
+				.FindAsync(user => user.Email == request.Email);
 
-			// Try verify if the saved hash password is equals to request password
+			if (existentUser is null)
+				throw new EntityNotFoundException();
 
-			// Sign jwt with user's informations as claims
-			await Task.CompletedTask;
-			return new JwtDto();
+			if (request.Password != existentUser.Password)
+				throw new EntityNotFoundException();
+
+			var result = _jwtTokenHelper
+				.GenerateJwtToken(existentUser.Key, existentUser.Role);
+
+			return new AuthenticationJwtDto(
+				result.AccessToken,
+				result.ExpiresIn
+			);
 		}
 	}
 }
