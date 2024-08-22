@@ -13,8 +13,9 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserRequest, Entit
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUsersRepository _usersRepository;
 
-    public CreateUserCommandHandler(IUnitOfWork unitOfWork, IUsersRepository usersRepository)
+    public CreateUserCommandHandler(INotificationContext notificationContext, IUnitOfWork unitOfWork, IUsersRepository usersRepository)
     {
+        _notificationContext = notificationContext;
         _unitOfWork = unitOfWork;
         _usersRepository = usersRepository;
     }

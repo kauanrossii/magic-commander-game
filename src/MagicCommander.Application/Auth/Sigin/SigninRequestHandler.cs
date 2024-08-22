@@ -1,12 +1,12 @@
-﻿using MagicCommander.Api.Helpers;
-using MagicCommander.Application._Shared.Dtos.Jwt;
+﻿using MagicCommander.Application._Shared.Dtos.Jwt;
 using MagicCommander.Application._Shared.Exceptions;
+using MagicCommander.Application._Shared.Helpers;
 using MagicCommander.Domain.Users;
 using MediatR;
 
 namespace MagicCommander.Application.Auth.Sigin
 {
-    public class SigninRequestHandler : IRequestHandler<SigninRequest, AuthenticationJwtDto?>
+    public class SigninRequestHandler : IRequestHandler<SigninRequest, JwtDto?>
 	{
 		private readonly IUsersRepository _usersRepository;
 		private readonly JwtTokenHelper _jwtTokenHelper;
@@ -17,7 +17,7 @@ namespace MagicCommander.Application.Auth.Sigin
 			_jwtTokenHelper = jwtTokenHelper;
 		}
 
-		public async Task<AuthenticationJwtDto?> Handle(SigninRequest request, CancellationToken cancellationToken)
+		public async Task<JwtDto?> Handle(SigninRequest request, CancellationToken cancellationToken)
 		{
 			var existentUser = await _usersRepository
 				.FindAsync(user => user.Email == request.Email);
@@ -28,12 +28,12 @@ namespace MagicCommander.Application.Auth.Sigin
 			if (request.Password != existentUser.Password)
 				throw new EntityNotFoundException();
 
-			var (AccessToken, ExpiresIn) = _jwtTokenHelper
-				.GenerateJwtToken(existentUser.Key, existentUser.Role);
+			var (expiresIn, accessToken) = _jwtTokenHelper
+				.GenerateJwtToken(existentUser.Id, existentUser.Role);
 
-			return new AuthenticationJwtDto(
-				AccessToken,
-				ExpiresIn
+			return new JwtDto(
+				accessToken,
+				expiresIn
 			);
 		}
 	}

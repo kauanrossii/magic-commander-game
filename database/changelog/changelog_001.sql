@@ -3,6 +3,7 @@ CREATE TABLE public."User" (
 	"Key" uuid NOT NULL,
 	"Name" varchar(100) NOT NULL,
 	"Email" varchar(100) NULL,
+	"Role" int4 NOT NULL,
 	"Password" varchar(128) NOT NULL,
 	"CreatedAt" timestamptz NOT NULL,
 	"UpdatedAt" timestamptz NOT NULL,

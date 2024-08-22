@@ -11,20 +11,25 @@ namespace MagicCommander.Api.CrossCutting.Middlewares
 
 		public void OnActionExecuted(ActionExecutedContext context)
 		{
-			if (context.Exception is EntityNotFoundException)
+			if (context.Exception is not null)
 			{
-				context.Result = new ObjectResult(new ErrorResponse("resource-not-found", "The requested resource was not found."))
+
+				if (context.Exception is EntityNotFoundException)
 				{
-					StatusCode = (int)HttpStatusCode.NotFound
-				};
-				context.ExceptionHandled = true;
-			} else
-			{
-				context.Result = new ObjectResult(new ErrorResponse("internal-error", "An internal server error ocurred."))
+					context.Result = new ObjectResult(new ErrorResponse("resource-not-found", "The requested resource was not found."))
+					{
+						StatusCode = (int)HttpStatusCode.NotFound
+					};
+					context.ExceptionHandled = true;
+				}
+				else
 				{
-					StatusCode = (int)HttpStatusCode.NotFound
-				};
-				context.ExceptionHandled = true;
+					context.Result = new ObjectResult(new ErrorResponse("internal-error", "An internal server error ocurred."))
+					{
+						StatusCode = (int)HttpStatusCode.NotFound
+					};
+					context.ExceptionHandled = true;
+				}
 			}
 		}
 

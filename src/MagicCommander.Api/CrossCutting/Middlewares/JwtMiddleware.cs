@@ -1,5 +1,5 @@
-﻿using MagicCommander.Api.Helpers;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using MagicCommander.Application._Shared.Helpers;
 
 namespace MagicCommander.Api.CrossCutting.Middlewares
 {

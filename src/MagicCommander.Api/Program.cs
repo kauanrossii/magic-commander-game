@@ -1,5 +1,6 @@
+using MagicCommander.Api.CrossCutting.Filters;
 using MagicCommander.Api.CrossCutting.Middlewares;
-using MagicCommander.Api.Helpers;
+using MagicCommander.Application._Shared.Helpers;
 using MagicCommander.Application.Auth.Sigin;
 using MagicCommander.Domain._Shared.Entities;
 using MagicCommander.Domain._Shared.Notifications;
@@ -24,7 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsDevelopment())
 {
-	Environment.SetEnvironmentVariable("JwtSecret", builder.Configuration.GetValue<string>("JwtSecet"));
+	Environment.SetEnvironmentVariable("JwtSecret", builder.Configuration.GetValue<string>("JwtSecret"));
 }
 
 builder.Services.AddDbContext<DbContext, MagicContext>(options =>
@@ -87,6 +88,11 @@ builder.Services.AddAuthorization(options =>
 			.Build();
 });
 
+builder.Services.AddControllers(options => {
+	options.Filters.Add<NotificationFilter>();
+	options.Filters.Add<HttpResponseExceptionFilter>();
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -94,7 +100,7 @@ builder.Services.AddSwaggerGen(options =>
 	options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
 		In = ParameterLocation.Header,
-		Description = "Please ener a valid token",
+		Description = "Please enter a valid token",
 		Name = "Authorization",
 		Type = SecuritySchemeType.Http,
 		BearerFormat = "JWT",

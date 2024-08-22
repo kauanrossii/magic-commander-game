@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MagicCommander.Api.Helpers
+namespace MagicCommander.Application._Shared.Helpers
 {
 	public class JwtTokenHelper
 	{
@@ -15,18 +15,18 @@ namespace MagicCommander.Api.Helpers
 			_jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
 		}
 
-		public (string AccessToken, DateTimeOffset ExpiresIn) GenerateJwtToken(Guid userKey, TypeRole role)
+		public (DateTimeOffset expiresIn, string accessToken) GenerateJwtToken(int userId, TypeRole role)
 		{
 			var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JwtSecret")!);
 
 			var claims = new List<Claim>
 			{
-				new (ClaimTypes.NameIdentifier, userKey.ToString()),
-				new (ClaimTypes.Role, role.ToString())
+				new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+				new Claim(ClaimTypes.Role, role.ToString())
 			};
 
 			var identity = new ClaimsIdentity(claims);
-			var expiresIn = DateTime.UtcNow.AddHours(1);
+			var expiresIn = DateTime.UtcNow.AddHours(1); 
 
 			var tokenDescriptor = new SecurityTokenDescriptor
 			{
@@ -42,7 +42,7 @@ namespace MagicCommander.Api.Helpers
 
 			var token = _jwtSecurityTokenHandler.CreateJwtSecurityToken(tokenDescriptor);
 
-			return (_jwtSecurityTokenHandler.WriteToken(token), expiresIn);
+			return (expiresIn, _jwtSecurityTokenHandler.WriteToken(token));
 		}
 
 		public ClaimsPrincipal ValidateJwtToken(string token)

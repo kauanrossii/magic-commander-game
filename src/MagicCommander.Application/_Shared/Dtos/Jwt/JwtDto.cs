@@ -1,6 +1,6 @@
 ﻿namespace MagicCommander.Application._Shared.Dtos.Jwt
 {
-	public record AuthenticationJwtDto(
+	public record JwtDto(
 		string AccessToken,
 		DateTimeOffset ExpiresIn
 	);

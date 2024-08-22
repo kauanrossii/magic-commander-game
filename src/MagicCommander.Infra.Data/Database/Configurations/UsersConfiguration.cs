@@ -1,6 +1,8 @@
 using MagicCommander.Domain.Users.Entites;
+using MagicCommander.Domain.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MagicCommander.Infra.Data.Database.Configurations;
 
@@ -37,6 +39,12 @@ public class UsersConfiguration : IEntityTypeConfiguration<User>
         builder
             .Property(u => u.Password)
             .HasColumnName("Password")
+            .IsRequired();
+
+        builder
+            .Property(u => u.Role)
+            .HasConversion(new EnumToNumberConverter<TypeRole, int>())
+            .HasColumnName("Role")
             .IsRequired();
 
         builder.OwnsOne(d => d.Audit, audit =>

@@ -16,5 +16,6 @@ public class MagicContext : DbContext
         modelBuilder.ApplyConfiguration(new CardsConfiguration());
         modelBuilder.ApplyConfiguration(new DecksConfiguration());
         modelBuilder.ApplyConfiguration(new UsersConfiguration());
+        modelBuilder.ApplyConfiguration(new DeckImportsConfiguration());
     }
 }
