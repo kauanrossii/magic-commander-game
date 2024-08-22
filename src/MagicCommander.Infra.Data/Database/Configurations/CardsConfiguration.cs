@@ -143,28 +143,28 @@ public class CardsConfiguration : IEntityTypeConfiguration<Card>
             .IsRequired();
 
         builder
-            .OwnsMany(c => c.Rullings, rullings =>
+            .OwnsMany(c => c.Rulings, rulings =>
             {
-                rullings
-                    .ToTable("Rulling")
+                rulings
+                    .ToTable("Ruling")
                     .HasKey(r => r.Id);
 
-                rullings
+                rulings
                     .Property(r => r.Id)
                     .ValueGeneratedOnAdd()
                     .IsRequired();
 
-                rullings
+                rulings
                     .Property(r => r.Key)
                     .HasColumnName("Key")
                     .IsRequired();
 
-                rullings
+                rulings
                     .Property(r => r.Text)
                     .HasColumnName("Text")
                     .IsRequired();
 
-                rullings
+                rulings
                     .Property(r => r.Date)
                     .HasColumnName("Date")
                     .IsRequired();
