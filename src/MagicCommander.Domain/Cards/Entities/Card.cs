@@ -9,7 +9,7 @@ namespace MagicCommander.Domain.Cards.Entities
 		private List<SupertypeCard> _supertypes = new();
 		private List<TypeCard> _types = new();
 		private List<SubtypeCard> _subtypes = new();
-		private List<Rulling> _rullings = new();
+		private List<Ruling> _rullings = new();
 
 		public Guid Key { get; set; }
 		public int MultiverseId { get; set; }
@@ -31,10 +31,32 @@ namespace MagicCommander.Domain.Cards.Entities
 		public IReadOnlyList<SupertypeCard> Supertypes { get { return _supertypes; } set { _supertypes = value.ToList(); } }
 		public IReadOnlyList<TypeCard> Types { get { return _types; } set { _types = value.ToList(); } }
 		public IReadOnlyList<SubtypeCard> Subtypes { get { return _subtypes; } set { _subtypes = value.ToList(); } }
-		public IReadOnlyList<Rulling> Rullings { get { return _rullings; } set { _rullings = value.ToList(); } }
+		public IReadOnlyList<Ruling> Rulings { get { return _rullings; } set { _rullings = value.ToList(); } }
 		public Audit Audit { get; set; } = new();
 
 		protected Card() { }
+
+		public static Card FromDto(int multiverseId, int cmc, string name, string manaCost, string set, string text, string artist, string number, string layout, string imageUrl, string type, TypeRarity rarity, List<TypeColor> colors, List<TypeCard> types, List<SubtypeCard> subtypes)
+		{
+			return new Card
+			{
+				MultiverseId = multiverseId,
+				Cmc = cmc,
+				Name = name,
+				ManaCost = manaCost,
+				Set = set,
+				Text = text,
+				Artist = artist,
+				Number = number,
+				Layout = layout,
+				ImageUrl = imageUrl,
+				Type = type,
+				Rarity = rarity,
+				Colors = colors,
+				Types = types,
+				Subtypes = subtypes
+			};
+		}
 
 		public Card(int multiverseId, int cmc, string name, string manaCost, string set, string text, string artist, string number, string power, string toughness, string layout, string imageUrl, string externalId, TypeRarity rarity, List<TypeColor> colors, List<SupertypeCard> supertypes, List<TypeCard> types, List<SubtypeCard> subtypes)
 		{

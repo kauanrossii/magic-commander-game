@@ -4,6 +4,11 @@ using MagicCommander.Domain.Decks.Entities;
 using MagicCommander.Domain.Decks;
 using MediatR;
 using MagicCommander.Domain._Shared.Entities;
+using MagicCommander.Domain.Cards.Services;
+using MagicCommander.Domain.Cards;
+using MediatR.Wrappers;
+using MagicCommander.Domain._Shared.Exceptions;
+using MagicCommander.Domain.Cards.Entities;
 
 namespace MagicCommander.Application.Decks.CreateDeck
 {
@@ -11,13 +16,17 @@ namespace MagicCommander.Application.Decks.CreateDeck
 	{
 		private readonly INotificationContext _notificationContext;
 		private readonly IDecksRepository _decksRepository;
+		private readonly ICardsRepository _cardsRepository;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IApiMagicService _apiMagicService;
 
-		public CreateDeckRequestHandler(INotificationContext notificationContext, IDecksRepository decksRepository, IUnitOfWork unitOfWork)
+		public CreateDeckRequestHandler(INotificationContext notificationContext, IDecksRepository decksRepository, IUnitOfWork unitOfWork, IApiMagicService apiMagicService, ICardsRepository cardsRepository)
 		{
 			_notificationContext = notificationContext;
 			_decksRepository = decksRepository;
 			_unitOfWork = unitOfWork;
+			_apiMagicService = apiMagicService;
+			_cardsRepository = cardsRepository;
 		}
 
 		public async Task<EntityKeyDto?> Handle(CreateDeckRequest request, CancellationToken cancellationToken)
@@ -31,7 +40,12 @@ namespace MagicCommander.Application.Decks.CreateDeck
 				return null;
 			}
 
-			var commanderTypeIdentifiers = request.Commander.Type.Split('-');
+			var commanderCard = await SaveCommanderCard(request.CommanderExternalId);
+
+			if (commanderCard is null)
+				return null;
+
+			var commanderTypeIdentifiers = commanderCard.Type.Split('-');
 
 			if (commanderTypeIdentifiers.Length == 0)
 			{
@@ -50,13 +64,34 @@ namespace MagicCommander.Application.Decks.CreateDeck
 
 			var deck = new Deck(
 				request.Name,
-				request.Commander
+				commanderCard
 			);
 
 			await _decksRepository.InsertAsync(deck);
 			await _unitOfWork.CommitAsync(cancellationToken);
 
 			return new EntityKeyDto(deck.Key);
+		}
+
+		private async Task<Card?> SaveCommanderCard(string externalId)
+		{
+			var existentCard = await _cardsRepository
+				.FindAsync(card => card.ExternalId == externalId);
+
+			if (existentCard is not null)
+				return existentCard;
+
+			try
+			{
+				var card = await _apiMagicService.GetCardByExternalId(externalId);
+				await _cardsRepository.InsertAsync(card);
+				return card;
+			}
+			catch (MagicApiResourceNotFoundException e)
+			{
+				_notificationContext.AddNotification(new Notification("CommanderId", "InexistentCommander", e.Message));
+				return null;
+			}
 		}
 	}
 }

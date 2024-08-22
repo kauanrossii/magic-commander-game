@@ -50,7 +50,7 @@ namespace MagicCommander.Domain.Decks.Entities
             => Commander.Colors.Except(colors).Any();
 
         private bool IsCardDuplicatedInDeck(Card card)
-            => _cards.Exists(card => card.ExternalId == card.ExternalId);
+            => _cards.Exists(c => c.ExternalId == card.ExternalId);
 
         public bool RemoveCard(Card card) =>
             _cards.Remove(card);

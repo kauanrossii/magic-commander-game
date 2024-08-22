@@ -9,7 +9,7 @@ namespace MagicCommander.Application.Decks.CreateDeck
 	{
 		[JsonIgnore]
 		public int UserId { get; set; }
+		public required string CommanderExternalId { get; init; }
 		public required string Name { get; init; }
-		public required Card Commander { get; init; }
 	}
 }
