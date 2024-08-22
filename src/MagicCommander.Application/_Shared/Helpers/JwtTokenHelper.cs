@@ -40,7 +40,7 @@ namespace MagicCommander.Application._Shared.Helpers
 				Audience = Environment.GetEnvironmentVariable("JwtAudience")
 			};
 
-			var token = _jwtSecurityTokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+			var token = _jwtSecurityTokenHandler.CreateToken(tokenDescriptor);
 
 			return (expiresIn, _jwtSecurityTokenHandler.WriteToken(token));
 		}
