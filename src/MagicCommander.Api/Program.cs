@@ -1,7 +1,8 @@
-using MagicCommander.Api.CrossCutting;
+using MagicCommander.Api.CrossCutting.Middlewares;
 using MagicCommander.Api.Helpers;
 using MagicCommander.Application.Auth.Sigin;
 using MagicCommander.Domain._Shared.Entities;
+using MagicCommander.Domain._Shared.Notifications;
 using MagicCommander.Domain.Cards;
 using MagicCommander.Domain.Decks;
 using MagicCommander.Domain.DecksImports;
@@ -9,6 +10,8 @@ using MagicCommander.Domain.Users;
 using MagicCommander.Infra.Data.Database;
 using MagicCommander.Infra.Data.Database._Shared;
 using MagicCommander.Infra.Data.Database.Repositories;
+using MediatR;
+using MediatR.NotificationPublishers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -40,10 +43,14 @@ builder.Services.AddScoped<IDeckImportsRepository, DeckImportsRepository>();
 builder.Services.AddScoped<JwtTokenHelper>();
 builder.Services.AddScoped<JwtMiddleware>();
 
+builder.Services.AddScoped<INotificationContext, NotificationContext>();
+
 builder.Services.AddMediatR(cfg =>
 {
 	cfg.RegisterServicesFromAssemblyContaining<Program>();
 	cfg.RegisterServicesFromAssemblyContaining<SigninRequest>();
+	cfg.NotificationPublisher = new TaskWhenAllPublisher();
+	cfg.NotificationPublisherType = typeof(TaskWhenAllPublisher);
 });
 
 builder.Services.AddMvc(config =>

@@ -1,5 +1,6 @@
 using MagicCommander.Application._Shared.Dtos;
 using MagicCommander.Domain._Shared.Entities;
+using MagicCommander.Domain._Shared.Notifications;
 using MagicCommander.Domain.Users;
 using MagicCommander.Domain.Users.Entites;
 using MediatR;
@@ -8,6 +9,7 @@ namespace MagicCommander.Application.Users.CreateUser;
 
 public class CreateUserCommandHandler : IRequestHandler<CreateUserRequest, EntityKeyDto?>
 {
+    private readonly INotificationContext _notificationContext;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUsersRepository _usersRepository;
 
@@ -25,7 +27,10 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserRequest, Entit
         );
     
         if (duplicatedUser)
+        {
+            _notificationContext.AddNotification(new Notification("Email", "DuplicatedEmail", "There is already an user with the same email."));
             return null;
+        }
 
         var user = new User(
             request.Name,
@@ -36,8 +41,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserRequest, Entit
         await _usersRepository.InsertAsync(user);
         await _unitOfWork.CommitAsync(cancellationToken);
 
-        return new EntityKeyDto {
-            Key = user.Key
-        };
+        return new EntityKeyDto(user.Key);
     }
 }

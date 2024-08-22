@@ -18,6 +18,7 @@ namespace MagicCommander.Domain.Cards.Entities
 		public string ManaCost { get; set; } = string.Empty;
 		public string Set { get; set; } = string.Empty;
 		public string Text { get; set; } = string.Empty;
+		public string Type { get; set; } = string.Empty;
 		public string Artist { get; set; } = string.Empty;
 		public string Number { get; set; } = string.Empty;
 		public string Power { get; set; } = string.Empty;

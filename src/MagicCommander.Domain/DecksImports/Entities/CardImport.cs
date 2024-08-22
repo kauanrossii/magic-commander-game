@@ -9,18 +9,17 @@ public class CardImport : Entity, IHasAlternateKey
 
     public Guid Key { get; init; }
     public int DeckImportId { get; init; }
-    public JsonDocument Data { get; init; }
+    public string Data { get; init; }
     public IReadOnlyList<CardImportStatus> Status { get { return _status; } set { _status = value.ToList(); } }
 
     protected CardImport() { }
 
-    public CardImport(int deckImportId, JsonDocument data)
+    public CardImport(string data)
     {
-        DeckImportId = deckImportId;
         Data = data;
         _status.Add(new CardImportStatus(TypeStatusCardImport.Created));
     }
-
+    
     private bool UpdateStatus(TypeStatusCardImport typeStatusCardImport, string observation = "")
     {
         var currentStatus = _status.FirstOrDefault(st => st.Current);

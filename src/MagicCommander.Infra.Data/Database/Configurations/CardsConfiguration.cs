@@ -38,6 +38,11 @@ public class CardsConfiguration : IEntityTypeConfiguration<Card>
             .IsRequired();
 
         builder
+            .Property(c => c.Type)
+            .HasColumnName("Type")
+            .IsRequired();
+
+        builder
             .Property(c => c.ManaCost)
             .HasColumnName("ManaCost")
             .IsRequired();

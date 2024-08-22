@@ -1,5 +1,7 @@
 using MagicCommander.Domain._Shared;
 using MagicCommander.Domain._Shared.Entities;
+using MagicCommander.Domain.Cards.Entities;
+using System.Text.Json;
 
 namespace MagicCommander.Domain.DecksImports.Entities;
 
@@ -27,7 +29,7 @@ public class DeckImport : Entity, IHasAlternateKey
     {
         var currentStatus = _status.FirstOrDefault(st => st.Current);
 
-        if (currentStatus?.Status == typeStatusDeckImport)
+        if (currentStatus?.Type == typeStatusDeckImport)
             return false;
 
         currentStatus.Current = false;
@@ -41,7 +43,9 @@ public class DeckImport : Entity, IHasAlternateKey
 
     public bool RegisterCompleted()
         => UpdateStatus(TypeStatusDeckImport.Completed);
-    
+
     public bool RegisterError(string observation)
         => UpdateStatus(TypeStatusDeckImport.Error, observation);
+
+    public void AddCardImport(Card card) { }
 }

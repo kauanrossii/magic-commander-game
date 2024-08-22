@@ -30,6 +30,7 @@ CREATE TABLE public."Card" (
 	"MultiverseId" int4 NOT NULL,
 	"Cmc" int4 NOT NULL,
 	"Name" varchar(150) NOT NULL,
+	"Type" varchar NOT NULL,
 	"ManaCost" varchar(10) NOT NULL,
 	"Set" varchar(10) NOT NULL,
 	"Text" varchar NOT NULL,

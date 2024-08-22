@@ -1,5 +1,6 @@
 ﻿using MagicCommander.Domain._Shared;
 using MagicCommander.Domain._Shared.Entities;
+using MagicCommander.Domain._Shared.Notifications;
 using MagicCommander.Domain.Cards.Entities;
 
 namespace MagicCommander.Domain.Decks.Entities
@@ -24,16 +25,25 @@ namespace MagicCommander.Domain.Decks.Entities
             Commander = commander;
         }
 
-        public bool AddCard(Card card)
+        public (bool success, List<Notification> notifications) AddCard(Card card)
         {
+            var notifications = new List<Notification>();
+
             if (!IsCardColorsValid(card.Colors))
-                return false;
+            {
+                notifications.Add(new Notification(card.Name, "InvalidCard", "The color of card isn't the same of deck commander"));
+            }
 
             if (IsCardDuplicatedInDeck(card))
-                return false;
+            {
+				notifications.Add(new Notification(card.Name, "DuplicatedCard", "The card was already added to deck before."));
+			}
+
+            if (notifications.Count > 0) return (false, notifications);
 
             _cards.Add(card);
-            return true;
+
+            return (true, notifications);
         }
 
         private bool IsCardColorsValid(IEnumerable<TypeColor> colors)
