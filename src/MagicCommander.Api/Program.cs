@@ -5,6 +5,7 @@ using MagicCommander.Application.Auth.Sigin;
 using MagicCommander.Domain._Shared.Entities;
 using MagicCommander.Domain._Shared.Notifications;
 using MagicCommander.Domain.Cards;
+using MagicCommander.Domain.Cards.Services;
 using MagicCommander.Domain.Decks;
 using MagicCommander.Domain.DecksImports;
 using MagicCommander.Domain.Users;
@@ -25,7 +26,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsDevelopment())
 {
-	Environment.SetEnvironmentVariable("JwtSecret", builder.Configuration.GetValue<string>("JwtSecret"));
+	Environment.SetEnvironmentVariable("JwtSecret", builder.Configuration.GetSection("Jwt")["Secret"]);
+	Environment.SetEnvironmentVariable("JwtIssuer", builder.Configuration.GetSection("Jwt")["Issuer"]);
+	Environment.SetEnvironmentVariable("JwtAudience", builder.Configuration.GetSection("Jwt")["Audience"]);
 }
 
 builder.Services.AddDbContext<DbContext, MagicContext>(options =>
@@ -42,9 +45,14 @@ builder.Services.AddScoped<ICardsRepository, CardsRepository>();
 builder.Services.AddScoped<IDeckImportsRepository, DeckImportsRepository>();
 
 builder.Services.AddScoped<JwtTokenHelper>();
-builder.Services.AddScoped<JwtMiddleware>();
 
 builder.Services.AddScoped<INotificationContext, NotificationContext>();
+
+builder.Services.AddHttpClient<IApiMagicService, ApiMagicService>()
+	.ConfigureHttpClient(client =>
+	{
+		client.BaseAddress = new Uri(builder.Configuration.GetSection("Services").GetSection("ApiMagicService")["BaseAddress"]);
+	});
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -66,6 +74,7 @@ builder.Services.AddAuthentication(x =>
 {
 	x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 	x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(x =>
 {
@@ -73,10 +82,11 @@ builder.Services.AddAuthentication(x =>
 	x.SaveToken = true;
 	x.TokenValidationParameters = new TokenValidationParameters
 	{
+		ValidateIssuer = false,
+		ValidateAudience = false,
 		ValidateIssuerSigningKey = true,
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JwtSecret"))!),
-		ValidateIssuer = true,
-		ValidateAudience = false
+		ValidateLifetime = true,
 	};
 });
 
@@ -88,7 +98,8 @@ builder.Services.AddAuthorization(options =>
 			.Build();
 });
 
-builder.Services.AddControllers(options => {
+builder.Services.AddControllers(options =>
+{
 	options.Filters.Add<NotificationFilter>();
 	options.Filters.Add<HttpResponseExceptionFilter>();
 });
@@ -123,8 +134,6 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-
-app.UseMiddleware<JwtMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
