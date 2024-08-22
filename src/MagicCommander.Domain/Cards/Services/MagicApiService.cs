@@ -32,13 +32,12 @@ public class ApiMagicService : IApiMagicService
                 PropertyNameCaseInsensitive = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
-            // return responseValue.Card;
+            return Card.FromDto(responseValue.Card);
         }
         else if (response.StatusCode == HttpStatusCode.NotFound)
         {
             throw new MagicApiResourceNotFoundException($"The selected card with id {externalId} doesn't exists");
         }
-
         return null;
     }
 }

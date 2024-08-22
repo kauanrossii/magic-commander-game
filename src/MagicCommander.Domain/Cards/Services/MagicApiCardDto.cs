@@ -5,20 +5,20 @@ namespace MagicCommander.Domain.Cards.Services;
 
 public record MagicApiCardResponseDto(MagicApiCardDto Card);
 public record MagicApiCardDto(
+    int MultiverseId,
+    double Cmc,
     string Name,
     string ManaCost,
-    double Cmc,
-    List<string> Colors,
     string Type,
-    // List<TypeCard> Types,
-    // List<SubtypeCard> Subtypes,
-    // TypeRarity Rarity,
     string Text,
     string Artist,
     string Number,
     string Layout,
-    string MultiverseId,
     string ImageUrl,
+    List<string> Colors,
+    List<string> Subtypes,
+    List<TypeCard> Types,
+    TypeRarity Rarity,
     List<Ruling> Rulings,
     Guid Id
 );

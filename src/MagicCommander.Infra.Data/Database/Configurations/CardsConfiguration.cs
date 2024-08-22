@@ -100,12 +100,6 @@ public class CardsConfiguration : IEntityTypeConfiguration<Card>
 
         builder
             .Property(c => c.Colors)
-            .HasConversion(
-                c => string.Join(",", c.Select(e => e.ToString().ToArray())),
-                c => c.Split(",", StringSplitOptions.RemoveEmptyEntries)
-                    .Select(e => (TypeColor)int.Parse(e))
-                    .ToList()
-            )
             .HasColumnName("Colors")
             .IsRequired();
 
@@ -133,12 +127,6 @@ public class CardsConfiguration : IEntityTypeConfiguration<Card>
 
         builder
             .Property(c => c.Subtypes)
-            .HasConversion(
-                c => string.Join(",", c.Select(e => e.ToString().ToArray())),
-                c => c.Split(",", StringSplitOptions.RemoveEmptyEntries)
-                    .Select(e => (SubtypeCard)int.Parse(e))
-                    .ToList()
-            )
             .HasColumnName("Subtypes")
             .IsRequired();
 

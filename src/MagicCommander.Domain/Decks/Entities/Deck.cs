@@ -46,7 +46,7 @@ namespace MagicCommander.Domain.Decks.Entities
             return (true, notifications);
         }
 
-        private bool IsCardColorsValid(IEnumerable<TypeColor> colors)
+        private bool IsCardColorsValid(IEnumerable<string> colors)
             => Commander.Colors.Except(colors).Any();
 
         private bool IsCardDuplicatedInDeck(Card card)
